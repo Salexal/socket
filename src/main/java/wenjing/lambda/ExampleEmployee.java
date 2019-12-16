@@ -11,6 +11,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -147,9 +148,9 @@ public class ExampleEmployee {
 
         //reduce （初始值，一个BinaryOperator<T>）没有初始值是 要是用Optional避免 NoSuchElementException
         // 其实有比这个更好的方法可以直接使用 sum 和 min
-        List<Integer> numbers = Arrays.asList(1, 2, 3,4,5,6,7,8,9);
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
         System.out.println("reduce 相乘");
-        System.out.println(numbers.stream().reduce(1,(a,b)->a*b));
+        System.out.println(numbers.stream().reduce(1, (a, b) -> a * b));
         Optional<Integer> sum = numbers.stream().reduce(Integer::sum);
         Optional<Integer> min = numbers.stream().reduce(Integer::min);
         Optional<Integer> mins = numbers.stream().min(Integer::compareTo);
@@ -162,18 +163,21 @@ public class ExampleEmployee {
 
         // range 和 rangeClosed 前者不包括结尾
         System.out.println("range 和 rangeClosed 的区别");
-        System.out.println(IntStream.range(1,100).filter(i -> i%2 == 0).count());
-        System.out.println(IntStream.rangeClosed(1,100).filter(i -> i%2 == 0).count());
+        System.out.println(IntStream.range(1, 100).filter(i -> i % 2 == 0).count());
+        System.out.println(IntStream.rangeClosed(1, 100).filter(i -> i % 2 == 0).count());
 
         // 生成勾股数
-        IntStream.rangeClosed(1,100)
-                .boxed()
+        IntStream.rangeClosed(1, 100).boxed()
                 .flatMap(a ->
-                        IntStream.rangeClosed(a,100)
-                                .filter(b -> Math.sqrt(a * a + b* b) % 1 == 0)
+                        IntStream.rangeClosed(a, 100)
                                 .mapToObj(b ->
-                                        new int[]{a, b, (int) Math.sqrt(a*a+b*b)}))
+                                        new double[]{a, b, Math.sqrt(a * a + b * b)})
+                                .filter(t -> t[2] % 1 == 0))
                 .limit(5)
                 .forEach(t -> System.out.println(t[0] + ", " + t[1] + ", " + t[2]));
+
+        Stream.iterate(new int[]{0, 1}, t -> new int[]{t[1], t[0] + t[1]})
+                .limit(10)
+                .forEach(t -> System.out.println("(" + t[0] + "," + t[1] + ")"));
     }
 }
